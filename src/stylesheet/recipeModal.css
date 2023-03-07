@@ -1,0 +1,7 @@
+.add-row {
+  cursor: pointer;
+}
+
+.add-row-disabled {
+  cursor: not-allowed;
+}

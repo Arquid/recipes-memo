@@ -1,0 +1,34 @@
+body {
+  background: rgb(2,0,36);
+  background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(115,115,223,1) 22%, rgba(0,212,255,1) 100%); 
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+}
+
+.recipes-container {
+  width:30%
+}
+
+h1 {
+  text-align: center;
+}
+
+.table {
+  width: 50%;
+}
+
+.table > :not(caption) > * > * {
+  border-bottom-width: 0px;
+}
+
+.accordion-buttons {
+  padding-top: 15px;
+}
+
+.add-new-recipe-button {
+  float: right;
+  padding-top: 15px;
+}
