@@ -10,8 +10,9 @@ import InputGroup from 'react-bootstrap/InputGroup'
 const RecipeModal = ({close, save}) => {
   const [name, setName] = useState('')
   const [ingredient, setIngredient] = useState('')
-  const [directions, setDirections] = useState('')
+  const [direction, setDirection] = useState('')
   const [allIngredients, setAllIngredients] = useState([])
+  const [allDirections, setAllDirections] = useState([])
 
   const changeName = (event) => {
     setName(event.target.value)
@@ -21,8 +22,8 @@ const RecipeModal = ({close, save}) => {
     setIngredient(event.target.value)
   }
 
-  const changeDirections = (event) => {
-    setDirections(event.target.value)
+  const changeDirection = (event) => {
+    setDirection(event.target.value)
   }
 
   const addNewIngredient = () => {
@@ -30,20 +31,27 @@ const RecipeModal = ({close, save}) => {
     setIngredient('')
   }
 
+  const addNewDirection = () => {
+    setAllDirections(allDirections.concat(direction))
+    setDirection('')
+  }
+
   const clearForm = () => {
     setName('')
     setAllIngredients([])
     setIngredient('')
-    setDirections('')
+    setAllDirections([])
+    setDirection('')
   }
 
-  const canSave = [name, directions].includes('') || !allIngredients.length > 0
+  const canSave = name === '' || !allIngredients.length > 0 || !allDirections.length > 0
 
   return (
     <div>
       <Modal
         show={true}
         backdrop='static'
+        size='lg'
       >
         <Modal.Header>
           <Modal.Title>Add new recipe</Modal.Title>
@@ -70,14 +78,24 @@ const RecipeModal = ({close, save}) => {
             </Form.Group>
             <Form.Group>
               <Form.Label>Directions:</Form.Label>
-              <Form.Control as='textarea' value={directions} onChange={changeDirections}/>
+              <ol>
+                {allDirections.map((item, idx) => {
+                  return <li key={item+idx}>{item}</li>
+                })}
+              </ol>
+              <InputGroup>
+                <Form.Control type='text' onChange={changeDirection} value={direction}/>
+                <InputGroup.Text className={direction === '' ? 'add-row-disabled' : 'add-row'} onClick={direction === '' ? null : addNewDirection}>
+                  Add step
+                </InputGroup.Text>
+              </InputGroup>
             </Form.Group>
           </Form>
         </Modal.Body>
         <Modal.Footer>
           <Button onClick={close}>Close</Button>
           <Button onClick={clearForm}>Clear</Button>
-          <Button disabled={canSave} onClick={() => save(name, allIngredients, directions)}>Save</Button>
+          <Button disabled={canSave} onClick={() => save(name, allIngredients, allDirections)}>Save</Button>
         </Modal.Footer>
       </Modal>
     </div>

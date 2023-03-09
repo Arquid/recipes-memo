@@ -64,7 +64,14 @@ const App = () => {
                   </div>
                   <div>
                     <h4>Directions:</h4>
-                    {recipe.directions}
+                    {recipe.directions.map(((item, idx) => {
+                      return (
+                        <div className='direction-container' key={item+idx}>
+                          <p className='step-text'>Step {idx + 1}</p>
+                          {item}
+                        </div>
+                      )
+                    }))}
                   </div>
                   <div className='accordion-buttons'>
                     <Button onClick={() => removeRecipe(recipe.id)}>Remove</Button>
