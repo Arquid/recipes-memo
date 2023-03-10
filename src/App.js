@@ -4,6 +4,7 @@ import './stylesheet/index.css'
 
 import Accordion from 'react-bootstrap/Accordion'
 import Button from 'react-bootstrap/Button'
+import { MdFavoriteBorder, MdFavorite } from 'react-icons/md'
 
 import RecipeModal from './components/RecipeModal'
 
@@ -44,6 +45,17 @@ const App = () => {
       .then(setRecipes(recipes.filter(recipe => recipe.id !== id)))
   }
 
+  const changeFavorite = (id) => {
+    const recipeToUpdate = recipes.find(recipe => recipe.id === id)
+    console.log("Recipe", recipeToUpdate)
+    const updatedRecipe = {...recipeToUpdate, favorite: !recipeToUpdate.favorite}
+    console.log("Recipe after", updatedRecipe)
+    
+    recipeService
+      .update(id,updatedRecipe)
+      .then(setRecipes(recipes.map(recipe => recipe.id === id ? updatedRecipe : recipe)))
+  }
+
   return (
     <div className='container'>
       <div className='recipes-container'>
@@ -75,11 +87,12 @@ const App = () => {
                   </div>
                   <div className='accordion-buttons'>
                     <Button onClick={() => removeRecipe(recipe.id)}>Remove</Button>
+                    <Button className='favorite-button' onClick={() => changeFavorite(recipe.id)}>{recipe.favorite ? <MdFavorite /> : <MdFavoriteBorder />}</Button>
                   </div>
                 </Accordion.Body>
               </Accordion.Item>
             </Accordion>
-        )
+          )
         })}
         <div className='add-new-recipe-button'>
           <Button onClick={showAddNewRecipe}>Add new recipe</Button>

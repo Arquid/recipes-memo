@@ -28,6 +28,10 @@ h1 {
   padding-top: 15px;
 }
 
+.favorite-button {
+  float: right;
+}
+
 .direction-container {
   border-bottom: solid 1px lightgrey;
 }

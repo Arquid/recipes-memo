@@ -22,7 +22,8 @@ let recipes = [
       'Sprinkle seasoning packet over beef, then pour in water until potatoes are almost covered.',
       'Cover with a lid or heavy aluminum foil.',
       'Roast in the preheated oven until corned beef is so tender it can be flaked apart with a fork, about 5 to 6 hours.'
-    ]
+    ],
+    favorite: true
   }
 ]
 
@@ -46,6 +47,13 @@ app.delete('/api/recipes/:id', (request, response) => {
   recipes = recipes.filter(recipe => recipe.id !== id)
 
   response.status(204).end()
+})
+
+app.put('/api/recipes/:id', (request, response) => {
+  const id = Number(request.params.id)
+  recipes = recipes.map(recipe => recipe.id === id ? request.body : recipe)
+
+  response.json(recipes)
 })
 
 const PORT = 3001

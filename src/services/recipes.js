@@ -19,5 +19,11 @@ const remove = async id => {
   return response.data
 }
 
+const update = async (id, updatedRecipe) => {
+  const response = await axios.put(`${baseUrl}/${id}`, updatedRecipe)
+  console.log(response.status)
+  return response.data
+}
+
 // eslint-disable-next-line import/no-anonymous-default-export
-export default {getAll, create, remove}
+export default {getAll, create, remove, update}
