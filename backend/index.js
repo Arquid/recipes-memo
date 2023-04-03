@@ -33,7 +33,9 @@ app.get('/api/recipes', (request, response) => {
 
 app.post('/api/recipes', (request, response) => {
   const recipe = request.body
-  const nextId = recipes.reduce((a, b) => a.id > b.id ? a.id : b.id)
+  const nextId = recipes.length > 0
+    ? Math.max(...recipes.map(n => n.id))
+    : 0;
 
   recipe.id = nextId + 1
 

@@ -13,15 +13,19 @@ import recipeService from './services/recipes'
 const App = () => {
   const [showAddRecipe, setShowAddRecipe] = useState(false)
   const [recipes, setRecipes] = useState([])
-  const showAddNewRecipe = () => {
-    setShowAddRecipe(!showAddRecipe)
-  }
 
   useEffect(() => {
     recipeService
       .getAll()
       .then(recipes => setRecipes(recipes))
+      .catch(error => {
+        console.log("Error:", error)
+      })
   }, [])
+
+  const showAddNewRecipe = () => {
+    setShowAddRecipe(!showAddRecipe)
+  }
 
   const addNewRecipe = (name, ingredients, directions) => {
 
@@ -37,6 +41,9 @@ const App = () => {
         setRecipes(recipes.concat(returnedRecipe))
         setShowAddRecipe(!showAddRecipe)
       })
+      .catch(error => {
+        console.log("Error:", error)
+      })
   }
 
   const removeRecipe = (id) => {
@@ -47,13 +54,14 @@ const App = () => {
 
   const changeFavorite = (id) => {
     const recipeToUpdate = recipes.find(recipe => recipe.id === id)
-    console.log("Recipe", recipeToUpdate)
     const updatedRecipe = {...recipeToUpdate, favorite: !recipeToUpdate.favorite}
-    console.log("Recipe after", updatedRecipe)
-    
+
     recipeService
       .update(id,updatedRecipe)
       .then(setRecipes(recipes.map(recipe => recipe.id === id ? updatedRecipe : recipe)))
+      .catch(error => {
+        console.log("Error:", error)
+      })
   }
 
   return (
