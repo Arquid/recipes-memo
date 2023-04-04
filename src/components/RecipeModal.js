@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import '../stylesheet/recipeModal.css'
 
@@ -7,12 +7,20 @@ import Button from 'react-bootstrap/Button'
 import Form from 'react-bootstrap/form'
 import InputGroup from 'react-bootstrap/InputGroup'
 
-const RecipeModal = ({close, save}) => {
+const RecipeModal = ({close, save, update, updateRecipe}) => {
   const [name, setName] = useState('')
   const [ingredient, setIngredient] = useState('')
   const [direction, setDirection] = useState('')
   const [allIngredients, setAllIngredients] = useState([])
   const [allDirections, setAllDirections] = useState([])
+
+  useEffect(() => {
+    if(updateRecipe) {
+      setName(updateRecipe.name)
+      setAllIngredients(updateRecipe.ingredients)
+      setAllDirections(updateRecipe.directions)
+    }
+  }, [updateRecipe])
 
   const changeName = (event) => {
     setName(event.target.value)
@@ -95,7 +103,10 @@ const RecipeModal = ({close, save}) => {
         <Modal.Footer>
           <Button onClick={close}>Close</Button>
           <Button onClick={clearForm}>Clear</Button>
-          <Button disabled={canSave} onClick={() => save(name, allIngredients, allDirections)}>Save</Button>
+          {!updateRecipe ?
+            <Button disabled={canSave} onClick={() => save(name, allIngredients, allDirections)}>Save</Button> :
+            <Button disabled={canSave} onClick={() => update(name, allIngredients, allDirections, updateRecipe.id)}>Update</Button>
+          }
         </Modal.Footer>
       </Modal>
     </div>

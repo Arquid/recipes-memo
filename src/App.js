@@ -13,6 +13,7 @@ import recipeService from './services/recipes'
 const App = () => {
   const [showAddRecipe, setShowAddRecipe] = useState(false)
   const [recipes, setRecipes] = useState([])
+  const [recipeToUpdate, setRecipeToUpdate] = useState(null)
 
   useEffect(() => {
     recipeService
@@ -23,8 +24,21 @@ const App = () => {
       })
   }, [])
 
-  const showAddNewRecipe = () => {
-    setShowAddRecipe(!showAddRecipe)
+  const showAddNewRecipe = id => {
+    if (id === null) {
+      setRecipeToUpdate(null)
+      setShowAddRecipe(!showAddRecipe)
+    } else {
+      recipeService
+        .getOne(id)
+        .then(returnedRecipe => {
+          setRecipeToUpdate(returnedRecipe)
+          setShowAddRecipe(!showAddRecipe)
+        })
+        .catch(error => {
+          console.log("error", error)
+        })
+    }
   }
 
   const addNewRecipe = (name, ingredients, directions) => {
@@ -32,7 +46,8 @@ const App = () => {
     const newRecipe = {
       name: name,
       ingredients: ingredients,
-      directions: directions
+      directions: directions,
+      favorite: false
     }
 
     recipeService
@@ -50,6 +65,24 @@ const App = () => {
     recipeService
       .remove(id)
       .then(setRecipes(recipes.filter(recipe => recipe.id !== id)))
+  }
+
+  const updateRecipe = (name, ingredients, directions, id) => {
+    const recipeToUpdate = recipes.find(recipe => recipe.id === id)
+
+    const changedRecipe = {
+      ...recipeToUpdate,
+      name: name,
+      ingredients: ingredients,
+      directions: directions
+    }
+
+    recipeService
+      .update(id, changedRecipe)
+      .then(updatedRecipe => {
+        setRecipes(recipes.map(recipe => recipe.id === id ? updatedRecipe : recipe))
+        setShowAddRecipe(!showAddRecipe)
+      })
   }
 
   const changeFavorite = (id) => {
@@ -94,7 +127,8 @@ const App = () => {
                     }))}
                   </div>
                   <div className='accordion-buttons'>
-                    <Button onClick={() => removeRecipe(recipe.id)}>Remove</Button>
+                    <Button className='remove-button' onClick={() => removeRecipe(recipe.id)}>Remove</Button>
+                    <Button onClick={() => showAddNewRecipe(recipe.id)}>Update</Button>
                     <Button className='favorite-button' onClick={() => changeFavorite(recipe.id)}>{recipe.favorite ? <MdFavorite /> : <MdFavoriteBorder />}</Button>
                   </div>
                 </Accordion.Body>
@@ -103,10 +137,10 @@ const App = () => {
           )
         })}
         <div className='add-new-recipe-button'>
-          <Button onClick={showAddNewRecipe}>Add new recipe</Button>
+          <Button onClick={() => showAddNewRecipe(null)}>Add new recipe</Button>
         </div>
       </div>
-      {showAddRecipe ? <RecipeModal close={showAddNewRecipe} save={addNewRecipe}/> : null}
+      {showAddRecipe ? <RecipeModal close={() => showAddNewRecipe(null)} save={addNewRecipe} update={updateRecipe} updateRecipe={recipeToUpdate}/> : null}
     </div>
   )
 }

@@ -31,6 +31,17 @@ app.get('/api/recipes', (request, response) => {
   response.json(recipes)
 })
 
+app.get('/api/recipes/:id', (request, response) => {
+  const id = Number(request.params.id);
+  const recipe = recipes.find(recipe => recipe.id === id);
+
+  if(recipe) {
+    response.json(recipe);
+  } else {
+    response.status(404).end();
+  }
+})
+
 app.post('/api/recipes', (request, response) => {
   const recipe = request.body
   const nextId = recipes.length > 0
@@ -55,7 +66,13 @@ app.put('/api/recipes/:id', (request, response) => {
   const id = Number(request.params.id)
   recipes = recipes.map(recipe => recipe.id === id ? request.body : recipe)
 
-  response.json(recipes)
+  const recipe = recipes.find(recipe => recipe.id === id)
+
+  if(recipe) {
+    response.json(recipe);
+  } else {
+    response.status(404).end();
+  }
 })
 
 const PORT = 3001
