@@ -14,6 +14,7 @@ const App = () => {
   const [showAddRecipe, setShowAddRecipe] = useState(false)
   const [recipes, setRecipes] = useState([])
   const [recipeToUpdate, setRecipeToUpdate] = useState(null)
+  const [showFavorites, setShowFavorites] = useState(false)
 
   useEffect(() => {
     recipeService
@@ -97,11 +98,21 @@ const App = () => {
       })
   }
 
+  const selectedRecipes = showFavorites ? recipes.filter(recipe => recipe.favorite === true) : recipes
+
   return (
     <div className='container'>
       <div className='recipes-container'>
         <h1>Recipes memo</h1>
-        {recipes.map(recipe => {
+        <div className="tabs">
+          <Button
+            className="tab-favorite"
+            title="Show favorites"
+            onClick={() => setShowFavorites(!showFavorites)}>
+              {showFavorites ? <MdFavorite /> : <MdFavoriteBorder />}
+          </Button>
+        </div>
+        {selectedRecipes.map(recipe => {
           return (
             <Accordion key={recipe.name}>
               <Accordion.Item eventKey="0">
