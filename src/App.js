@@ -4,6 +4,7 @@ import './stylesheet/index.css'
 
 import Accordion from 'react-bootstrap/Accordion'
 import Button from 'react-bootstrap/Button'
+import Form from 'react-bootstrap/form'
 import { MdFavoriteBorder, MdFavorite } from 'react-icons/md'
 
 import RecipeModal from './components/RecipeModal'
@@ -15,6 +16,7 @@ const App = () => {
   const [recipes, setRecipes] = useState([])
   const [recipeToUpdate, setRecipeToUpdate] = useState(null)
   const [showFavorites, setShowFavorites] = useState(false)
+  const [searchText, setSearchText] = useState("")
 
   useEffect(() => {
     recipeService
@@ -98,7 +100,12 @@ const App = () => {
       })
   }
 
+  const changeSearchText = (event) => {
+    setSearchText(event.target.value)
+  }
+
   const selectedRecipes = showFavorites ? recipes.filter(recipe => recipe.favorite === true) : recipes
+  const filteredRecipes = selectedRecipes.filter(recipe => recipe.name.toUpperCase().includes(searchText.toLocaleUpperCase()))
 
   return (
     <div className='container'>
@@ -111,8 +118,12 @@ const App = () => {
             onClick={() => setShowFavorites(!showFavorites)}>
               {showFavorites ? <MdFavorite /> : <MdFavoriteBorder />}
           </Button>
+          <div className="search-input">
+            <Form.Label>Search</Form.Label>
+            <Form.Control type="text" value={searchText} onChange={changeSearchText}/>
+          </div>
         </div>
-        {selectedRecipes.map(recipe => {
+        {filteredRecipes.map(recipe => {
           return (
             <Accordion key={recipe.name}>
               <Accordion.Item eventKey="0">
